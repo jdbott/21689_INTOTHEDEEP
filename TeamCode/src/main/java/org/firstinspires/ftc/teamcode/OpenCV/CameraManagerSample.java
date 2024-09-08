@@ -8,11 +8,13 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-public class CameraManagerYellowObject {
-    private OpenCvWebcam webcam;
-    private YellowObjectDetectionPipeline pipeline;
+import java.util.List;
 
-    public CameraManagerYellowObject(HardwareMap hardwareMap) {
+public class CameraManagerSample {
+    private OpenCvWebcam webcam;
+    private SampleDetectionPipeline pipeline;
+
+    public CameraManagerSample(HardwareMap hardwareMap) {
         // Get the camera monitor view ID for displaying the camera preview on the screen
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -22,7 +24,7 @@ public class CameraManagerYellowObject {
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
         // Create an instance of the TeamPropDetectionPipeline
-        pipeline = new YellowObjectDetectionPipeline();
+        pipeline = new SampleDetectionPipeline();
 
         // Set the pipeline for the webcam
         webcam.setPipeline(pipeline);
@@ -47,7 +49,8 @@ public class CameraManagerYellowObject {
         });
     }
 
-    public Rect getLargestYellowRect() {
-        return pipeline.getLargestYellowRect();
+    // Method to return all detected samples as a list of Sample objects
+    public List<SampleDetectionPipeline.Sample> getDetectedSamples() {
+        return pipeline.getDetectedSamples();
     }
 }

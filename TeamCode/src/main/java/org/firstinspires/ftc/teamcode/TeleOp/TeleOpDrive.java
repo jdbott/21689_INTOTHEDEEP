@@ -6,11 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.HardwareClasses.KickoffArm;
-import org.firstinspires.ftc.teamcode.OpenCV.CameraManagerYellowObject;
 import org.firstinspires.ftc.teamcode.PedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Vector;
-import org.opencv.core.Rect;
 
 @TeleOp (name = "A TeleOp")
 public class TeleOpDrive extends OpMode {
