@@ -8,21 +8,52 @@
 // please think carefully as to whether such customizations are really necessary
 // before doing so.
 
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
-// Custom definitions may go here
-
-// Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     packagingOptions {
+        jniLibs {
+            pickFirsts += ['**/*.so']
+        }
         jniLibs.useLegacyPackaging true
     }
 }
 
+repositories {
+    maven {
+        url = 'https://maven.brott.dev/'
+    }
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     implementation project(':FtcRobotController')
+    implementation 'org.jetbrains:annotations:15.0'
+    annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
+
+    implementation "com.acmerobotics.roadrunner:ftc:0.1.13"
+    implementation "com.acmerobotics.roadrunner:core:1.0.0-beta8"
+    implementation "com.acmerobotics.roadrunner:actions:1.0.0-beta8"
+    implementation "com.acmerobotics.dashboard:dashboard:0.4.14"
+    implementation 'org.openftc:apriltag:2.1.0'
+
+    // Add Kotlin standard library
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
