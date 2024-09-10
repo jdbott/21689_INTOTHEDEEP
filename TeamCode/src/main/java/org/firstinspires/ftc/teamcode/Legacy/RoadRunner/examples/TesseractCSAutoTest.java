@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Legacy.HardwareClasses.ArmRR;
-import org.firstinspires.ftc.teamcode.OpenCV.CameraManagerTeamProp;
+import org.firstinspires.ftc.teamcode.Legacy.OpenCV.CameraManagerTeamProp;
 import org.firstinspires.ftc.teamcode.Legacy.HardwareClasses.GripperRR;
 import org.firstinspires.ftc.teamcode.Legacy.RoadRunner.follower.MecanumDriveTeamChassis;
 

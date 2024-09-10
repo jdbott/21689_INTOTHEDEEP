@@ -86,7 +86,7 @@ public class SampleDetectionPipeline extends OpenCvPipeline {
             double area = Imgproc.contourArea(contour);
 
             // If the area is large enough, consider it a valid sample and draw a rectangle
-            if (area > 600 && area < 25000) {  // Lower area threshold
+            if (area > 300 && area < 25000) {  // Lower area threshold
                 // Draw rectangle with color corresponding to detected sample's color
                 Imgproc.rectangle(input, boundingRect, boxColor, 3);  // Use the color of the detected sample
 

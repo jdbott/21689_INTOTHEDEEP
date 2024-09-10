@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Legacy.TeleOp;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,6 +11,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.PedroPathing.follower.Follower;
+import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.BezierLine;
+import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.PedroPathing.pathGeneration.Point;
 
 @TeleOp(name = "Mec Drive")
 public class MecDrive extends LinearOpMode {
@@ -20,10 +25,10 @@ public class MecDrive extends LinearOpMode {
     private DcMotor rightFront = null;
     private DcMotor rightBack = null;
 
+    private Follower follower;
+
     private IMU imu;
     private YawPitchRollAngles orientation;
-
-    RevBlinkinLedDriver lights;
 
     private static final double DEADBAND_THRESHOLD = 0.05;
     private static final double ACCELERATION_RATE = 0.5;
@@ -41,11 +46,18 @@ public class MecDrive extends LinearOpMode {
 
         runtime.reset();
         imu.resetYaw();
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_BEATS_PER_MINUTE);
 
         while (opModeIsActive()) {
-
             driveCode();
+            follower.update();
+
+            if (gamepad1.dpad_right) {
+                follower.followPath(new Path(
+                        new BezierLine(
+                                new Point(follower.getPose().position.x, follower.getPose().position.y, Point.CARTESIAN),
+                                new Point(0, 0, Point.CARTESIAN)
+                        )));
+            }
 
             checkForImuReset();
 
@@ -55,8 +67,6 @@ public class MecDrive extends LinearOpMode {
             telemetry.addData("Heading:", String.format("%.1f", currentHeading));
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-
-            sleep(10);
         }
     }
 
@@ -81,8 +91,8 @@ public class MecDrive extends LinearOpMode {
         imu.initialize(new IMU.Parameters(orientationOnRobot));
         orientation = imu.getRobotYawPitchRollAngles();
 
-        lights = hardwareMap.get(RevBlinkinLedDriver.class, "led");
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BEATS_PER_MINUTE_LAVA_PALETTE);
+        follower = new Follower(hardwareMap, true);
+        follower.setStartingPose(new Pose2d(0, 0, Math.toRadians(0)));
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -95,21 +105,10 @@ public class MecDrive extends LinearOpMode {
             headingLock = !headingLock;
             rightStickPressed = true; // Set the flag to indicate the stick is pressed
 
-            if (headingLock) {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-            } else {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_BEATS_PER_MINUTE);
-            }
-
         } else if ((gamepad1.right_stick_x > 0.5 || gamepad1.right_stick_x < -0.5) && headingLock) {
             // Toggle the heading lock
             headingLock = !headingLock;
 
-            if (headingLock) {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-            } else {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_BEATS_PER_MINUTE);
-            }
         } else if (!gamepad1.right_stick_button) {
             rightStickPressed = false; // Reset the flag when the stick is released
         }
@@ -254,16 +253,7 @@ public class MecDrive extends LinearOpMode {
     public void checkForImuReset() {
 
         if (gamepad1.left_stick_button) {
-
             imu.resetYaw();
-            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIME);
-            sleep(100);
-
-            if (headingLock) {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-            } else {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_BEATS_PER_MINUTE);
-            }
         }
     }
 }
